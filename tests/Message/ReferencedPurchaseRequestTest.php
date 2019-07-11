@@ -4,7 +4,6 @@ use Omnipay\Tests\TestCase;
 
 /**
  * Gvp Gateway ReferencedPurchaseRequestTest
- * 
  * (c) Yasin Kuyu
  * 2015, insya.com
  * http://www.github.com/yasinkuyu/omnipay-gvp
@@ -17,12 +16,12 @@ class ReferencedPurchaseRequestTest extends TestCase
 
         $this->request = new ReferencedPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
-            array(
-                'transactionReference'  => '0987654345678900987654',
-                'amount'                => '10.00',
-                'currency'              => 949,
-                'testMode'              => true,
-            )
+            [
+                'transactionReference' => '0987654345678900987654',
+                'amount' => '10.00',
+                'currency' => 949,
+                'testMode' => true,
+            ]
         );
     }
 
@@ -33,10 +32,9 @@ class ReferencedPurchaseRequestTest extends TestCase
         /*
          * See https://bugs.php.net/bug.php?id=29500 for why this is cast to string
          */
-        $this->assertSame('Auth', (string)$data['Type']);
-        $this->assertSame('1200', (string)$data['Amount']);
-        $this->assertSame('949', (string)$data['Currency']);
-        $this->assertSame('0987654345678900987654', (string)$data['CrossReference']);
+        $this->assertSame('Auth', (string) $data['Type']);
+        $this->assertSame('1200', (string) $data['Amount']);
+        $this->assertSame('949', (string) $data['Currency']);
+        $this->assertSame('0987654345678900987654', (string) $data['CrossReference']);
     }
-
 }

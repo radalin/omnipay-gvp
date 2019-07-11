@@ -5,7 +5,7 @@ use Omnipay\Tests\GatewayTestCase;
 
 /**
  * Gvp Gateway Test
- * 
+ *
  * (c) Yasin Kuyu
  * 2015, insya.com
  * http://www.github.com/yasinkuyu/omnipay-gvp
@@ -28,13 +28,13 @@ class GatewayTest extends GatewayTestCase
             'currency' => 'TRY',
             'returnUrl' => 'http://sanalmagaza.org/return',
             'card' => new CreditCard(array(
-                'number'        => '5406675406675403',
-                'expiryMonth'   => '12',
-                'expiryYear'    => '2015',
-                'cvv'           => '000',
-                'email'         => 'yasinkuyu@gmail.com',
-                'firstname'     => 'Yasin',
-                'lastname'      => 'Kuyu'
+                'number' => '5406675406675403',
+                'expiryMonth' => '12',
+                'expiryYear' => '2015',
+                'cvv' => '000',
+                'email' => 'yasinkuyu@gmail.com',
+                'firstname' => 'Yasin',
+                'lastname' => 'Kuyu'
             )),
         );
     }

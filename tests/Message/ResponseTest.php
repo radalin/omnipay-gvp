@@ -1,11 +1,11 @@
 <?php namespace Omnipay\Gvp\Message;
 
 use Mockery as m;
+use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Tests\TestCase;
 
 /**
  * Gvp Gateway ResponseTest
- * 
  * (c) Yasin Kuyu
  * 2015, insya.com
  * http://www.github.com/yasinkuyu/omnipay-gvp
@@ -13,7 +13,7 @@ use Omnipay\Tests\TestCase;
 class ResponseTest extends TestCase
 {
     /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     * @expectedException InvalidResponseException
      */
     public function testPurchaseWithoutStatusCode()
     {
@@ -55,10 +55,10 @@ class ResponseTest extends TestCase
         $this->assertSame('POST', $response->getRedirectMethod());
         $this->assertSame('http://sanalmagaza.org/', $response->getRedirectUrl());
 
-        $expectedData = array(
+        $expectedData = [
             'ReturnUrl' => 'http://sanalmagaza.org/',
-            'ReferanceId' => '130215141054377801316798'
-        );
+            'ReferanceId' => '130215141054377801316798',
+        ];
         $this->assertEquals($expectedData, $response->getRedirectData());
     }
 }
