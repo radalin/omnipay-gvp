@@ -24,7 +24,7 @@ class Gateway extends AbstractGateway
     {
         return array(
             'terminalId' => '',
-            'merchandId' => '',
+            'merchantId' => '',
             'username' => 'PROVAUT',
             'password' => '123qweASD',
             'refundusername' => 'PROVRFN',
