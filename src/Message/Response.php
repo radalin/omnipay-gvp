@@ -7,6 +7,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Gvp Response
@@ -20,18 +21,23 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      * construct
      *
      * @param RequestInterface $request
-     * @param type             $data
+     * @param mixed            $data
      *
      * @throws InvalidResponseException
      */
     public function __construct(RequestInterface $request, $data)
     {
-        $this->request = $request;
         try {
-            $this->data = (array) simplexml_load_string($data);
+            if (is_string($data) || $data instanceof StreamInterface) {
+                $data = (array) simplexml_load_string((string) $data);
+            } elseif (!is_array($data)) {
+                throw new InvalidResponseException();
+            }
         } catch (Exception $ex) {
             throw new InvalidResponseException();
         }
+
+        parent::__construct($request, $data);
     }
 
     /**
@@ -42,7 +48,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     public function getCode()
     {
         return $this->isSuccessful()
-            ? $this->data["Transaction"]->Response->ReasonCode
+            ? (string) $this->data["Transaction"]->Response->ReasonCode
             : parent::getCode(); //$this->data["Transaction"]->AuthCode
     }
 
@@ -65,7 +71,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     {
 
         return $this->isSuccessful()
-            ? $this->data["Transaction"]->Response->RetrefNum : '';
+            ? (string) $this->data["Transaction"]->RetrefNum : '';
     }
 
     /**
@@ -75,9 +81,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     public function getMessage()
     {
-        if ($this->isSuccessful()) {
-            return $this->data["Transaction"]->Response->Message;
-        }
+        return (string) $this->data["Transaction"]->Response->Message;
     }
 
     /**
@@ -99,9 +103,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     public function getRedirectUrl()
     {
         if ($this->isRedirect()) {
-            $data = [
-                'TransId' => $this->data["Transaction"]->RetrefNum,
-            ];
+            $data = array(
+                'TransId' => (string) $this->data["Transaction"]->RetrefNum,
+            );
 
             return $this->getRequest()->getEndpoint().'/test/index?'
                 .http_build_query($data);

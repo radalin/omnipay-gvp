@@ -6,15 +6,12 @@ use Omnipay\Common\AbstractGateway;
 
 /**
  * Gvp Gateway
- *
  * (c) Yasin Kuyu
  * 2015, insya.com
  * http://www.github.com/yasinkuyu/omnipay-gvp
  */
 class Gateway extends AbstractGateway
 {
-    
-
     public function getName()
     {
         return 'Gvp';
@@ -31,8 +28,7 @@ class Gateway extends AbstractGateway
             'refundpassword' => '123qweASD',
             'installment' => '',
             'type' => 'preauth',
-            'currency' => 'TRY',
-            'testMode' => false
+            'testMode' => false,
         );
     }
 
@@ -160,5 +156,4 @@ class Gateway extends AbstractGateway
     {
         return $this->setParameter('orderid', $value);
     }
-
 }

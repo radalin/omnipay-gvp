@@ -15,46 +15,43 @@ class PurchaseRequest extends AbstractRequest
 {
     protected $actionType = 'preauth';
     protected $endpoint = '';
-    protected $endpoints
-        = [
-            'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',
-            'purchase' => 'https://sanalposprov.garanti.com.tr/VPServlet',
-        ];
-    protected $currencies
-        = [
-            'TRY' => 949,
-            'YTL' => 949,
-            'TRL' => 949,
-            'TL' => 949,
-            'USD' => 840,
-            'EUR' => 978,
-            'GBP' => 826,
-            'JPY' => 392,
-        ];
+    protected $endpoints = array(
+        'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',
+        'purchase' => 'https://sanalposprov.garanti.com.tr/VPServlet',
+    );
+    protected $currencyCodes = array(
+        'TRY' => 949,
+        'YTL' => 949,
+        'TRL' => 949,
+        'TL' => 949,
+        'USD' => 840,
+        'EUR' => 978,
+        'GBP' => 826,
+        'JPY' => 392,
+    );
 
     public function getData()
     {
-
         $this->validate('amount', 'card');
         $this->getCard()->validate();
         $currency = $this->getCurrency();
 
-        $data['Transaction'] = [
+        $data['Transaction'] = array(
             'Type' => $this->actionType,
             'InstallmentCnt' => $this->getInstallment(),
-            'Amount' => $this->getAmountInteger(),
-            'CurrencyCode' => $this->currencies[$currency],
+            'Amount' => $this->getAmount(),
+            'CurrencyCode' => $this->currencyCodes[$currency],
             'CardholderPresentCode' => "0",
             'MotoInd' => "N",
             'Description' => "",
             'OriginalRetrefNum' => $this->getTransactionId(),
-            'CepBank' => [
+            'CepBank' => array(
                 'GSMNumber' => $this->getCard()->getBillingPhone(),
                 'CepBank' => "",
-            ],
+            ),
             'PaymentType' => "K"
             // K->Kredi Kartı, D->Debit Kart, V->Vadesiz Hesap
-        ];
+        );
 
         return $data;
     }
@@ -71,29 +68,29 @@ class PurchaseRequest extends AbstractRequest
         $data['Version'] = "v0.01";
         $data['Mode'] = $this->getTestMode() ? 'TEST' : 'PROD';
 
-        $data['Terminal'] = [
+        $data['Terminal'] = array(
             'ProvUserID' => $this->getUserName(),
             'HashData' => $this->getTransactionHash($this->getPassword()),
             'UserID' => $this->getUserName(),
             'ID' => $this->getTerminalId(),
             'MerchantID' => $this->getMerchantId(),
-        ];
+        );
 
-        $data['Card'] = [
+        $data['Card'] = array(
             'Number' => $this->getCard()->getNumber(),
             'ExpireDate' => $this->getCard()->getExpiryDate('my'),
             'CVV2' => $this->getCard()->getCvv(),
-        ];
+        );
 
-        $data['Order'] = [
+        $data['Order'] = array(
             'OrderID' => $this->getOrderId(),
             'GroupID' => "",
-        ];
+        );
 
-        $data['Customer'] = [
+        $data['Customer'] = array(
             'IPAddress' => '127.0.0.1', //$this->getClientIp(),
             'EmailAddress' => $this->getCard()->getEmail(),
-        ];
+        );
 
         // Build api post url
         $this->endpoint = $this->getTestMode() == true
@@ -119,32 +116,16 @@ class PurchaseRequest extends AbstractRequest
 
         $document->appendChild($root);
 
-        // Post to Gvp
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ];
-
-        // Register the payment
-        $this->httpClient->setConfig(
-            [
-                'curl.options' => [
-                    'CURLOPT_SSL_VERIFYHOST' => 2,
-                    'CURLOPT_SSLVERSION' => 0,
-                    'CURLOPT_SSL_VERIFYPEER' => 0,
-                    'CURLOPT_RETURNTRANSFER' => 1,
-                    'CURLOPT_POST' => 1,
-                ],
-            ]
+        $httpResponse = $this->httpClient->request(
+            'POST',
+            $this->endpoint,
+            array(),
+            $document->saveXML()
         );
 
-        $httpResponse = $this->httpClient->post(
-            $this->endpoint,
-            $headers,
-            $document->saveXML()
-        )->send()
-        ;
+        $data = (array) simplexml_load_string($httpResponse->getBody());
 
-        return $this->response = new Response($this, $httpResponse->getBody());
+        return $this->response = new Response($this, $data);
     }
 
     public function getUserName()
@@ -161,10 +142,10 @@ class PurchaseRequest extends AbstractRequest
     {
         return strtoupper(
             sha1(
-                $this->getOrderId(),
-                $this->getTerminalId(),
-                $this->getCard()->getNumber(),
-                $this->getAmountInteger(),
+                $this->getOrderId().
+                $this->getTerminalId().
+                $this->getCard()->getNumber().
+                $this->getAmountInteger().
                 $this->getSecurityHash($password)
             )
         );
@@ -185,7 +166,7 @@ class PurchaseRequest extends AbstractRequest
         $tidPrefix = str_repeat('0', 9 - strlen($this->getTerminalId()));
         $terminalId = sprintf('%s%s', $tidPrefix, $this->getTerminalId());
 
-        return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
+        return strtoupper(sha1($password.$terminalId));
     }
 
     public function getPassword()
