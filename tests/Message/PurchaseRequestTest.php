@@ -14,7 +14,6 @@ class PurchaseRequestTest extends TestCase
                 'amount' => '11.00',
                 'currency' => 'TRY',
                 'testMode' => true,
-                // NOTE: Fill test card data
                 'card' => array(
                     'number' => '4824894728063019',
                     'expiryMonth' => '23',

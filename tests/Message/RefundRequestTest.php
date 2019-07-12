@@ -20,7 +20,6 @@ class RefundRequestTest extends TestCase
                 'amount' => '11.00',
                 'currency' => 'TRY',
                 'testMode' => true,
-                // NOTE: Fill test card data
                 'card' => array(
                     'number' => '5406675406675403',
                     'expiryMonth' => '07',
