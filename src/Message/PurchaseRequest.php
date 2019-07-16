@@ -39,7 +39,7 @@ class PurchaseRequest extends AbstractRequest
         $data['Transaction'] = array(
             'Type' => $this->actionType,
             'InstallmentCnt' => $this->getInstallment(),
-            'Amount' => $this->getAmount(),
+            'Amount' => $this->getAmountInteger(),
             'CurrencyCode' => $this->currencyCodes[$currency],
             'CardholderPresentCode' => "0",
             'MotoInd' => "N",
