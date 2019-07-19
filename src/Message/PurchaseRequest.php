@@ -19,28 +19,17 @@ class PurchaseRequest extends AbstractRequest
         'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',
         'purchase' => 'https://sanalposprov.garanti.com.tr/VPServlet',
     );
-    protected $currencyCodes = array(
-        'TRY' => 949,
-        'YTL' => 949,
-        'TRL' => 949,
-        'TL' => 949,
-        'USD' => 840,
-        'EUR' => 978,
-        'GBP' => 826,
-        'JPY' => 392,
-    );
 
     public function getData()
     {
         $this->validate('amount', 'card');
         $this->getCard()->validate();
-        $currency = $this->getCurrency();
 
         $data['Transaction'] = array(
             'Type' => $this->actionType,
             'InstallmentCnt' => $this->getInstallment(),
             'Amount' => $this->getAmountInteger(),
-            'CurrencyCode' => $this->currencyCodes[$currency],
+            'CurrencyCode' => $this->getCurrencyNumeric(),
             'CardholderPresentCode' => "0",
             'MotoInd' => "N",
             'Description' => "",
