@@ -112,9 +112,7 @@ class PurchaseRequest extends AbstractRequest
             $document->saveXML()
         );
 
-        $data = (array) simplexml_load_string($httpResponse->getBody());
-
-        return $this->response = new Response($this, $data);
+        return $this->response = new Response($this, $httpResponse);
     }
 
     public function getUserName()

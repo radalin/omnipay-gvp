@@ -7,6 +7,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -17,25 +18,25 @@ use Psr\Http\Message\StreamInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
+    protected $statusCode;
+
     /**
      * construct
      *
-     * @param RequestInterface $request
-     * @param mixed            $data
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
      *
      * @throws InvalidResponseException
      */
-    public function __construct(RequestInterface $request, $data)
+    public function __construct(RequestInterface $request, ResponseInterface $response)
     {
         try {
-            if (is_string($data) || $data instanceof StreamInterface) {
-                $data = (array) simplexml_load_string((string) $data);
-            } elseif (!is_array($data)) {
-                throw new InvalidResponseException();
-            }
+            $data = (array) simplexml_load_string((string) $response->getBody());
         } catch (Exception $ex) {
             throw new InvalidResponseException();
         }
+
+        $this->statusCode = $response->getStatusCode();
 
         parent::__construct($request, $data);
     }
@@ -47,9 +48,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     public function getCode()
     {
-        return $this->isSuccessful()
-            ? (string) $this->data["Transaction"]->Response->ReasonCode
-            : parent::getCode(); //$this->data["Transaction"]->AuthCode
+        return $this->statusCode;
     }
 
     /**
@@ -59,7 +58,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     public function isSuccessful()
     {
-        return (string) $this->data["Transaction"]->Response->Code === '00';
+        return '00' === (string) $this->data["Transaction"]->Response->Code;
     }
 
     /**

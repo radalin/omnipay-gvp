@@ -13,7 +13,7 @@ class ResponseTest extends TestCase
     public function testPurchaseSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('PurchaseSuccess.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response($this->getMockRequest(), $httpResponse);
 
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('xxx', $response->getTransactionReference());
@@ -24,7 +24,7 @@ class ResponseTest extends TestCase
     public function testPurchaseFailure()
     {
         $httpResponse = $this->getMockHttpResponse('PurchaseFailure.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response($this->getMockRequest(), $httpResponse);
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('', $response->getTransactionReference());
@@ -38,7 +38,7 @@ class ResponseTest extends TestCase
     //        $request = m::mock('\Omnipay\Common\Message\AbstractRequest');
     //        $request->shouldReceive('getReturnUrl')->once()->andReturn('http://sanalmagaza.org/');
     //
-    //        $response = new Response($request, $httpResponse->getBody());
+    //        $response = new Response($request, $httpResponse);
     //
     //        $this->assertTrue($response->isRedirect());
     //        $this->assertSame('POST', $response->getRedirectMethod());

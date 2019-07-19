@@ -38,7 +38,7 @@ class RefundRequestTest extends TestCase
          * See https://bugs.php.net/bug.php?id=29500 for why this is cast to string
          */
         $this->assertSame('refund', (string) $data['Transaction']['Type']);
-        $this->assertSame('11.00', (string) $data['Transaction']['Amount']);
+        $this->assertSame('1100', (string) $data['Transaction']['Amount']);
         $this->assertSame('949', (string) $data['Transaction']['CurrencyCode']);
     }
 }
