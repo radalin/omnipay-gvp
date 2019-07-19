@@ -13,7 +13,7 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class PurchaseRequest extends AbstractRequest
 {
-    protected $actionType = 'preauth';
+    protected $actionType = 'sales';
     protected $endpoint = '';
     protected $endpoints = array(
         'test' => 'https://sanalposprovtest.garanti.com.tr/VPServlet',

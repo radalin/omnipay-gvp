@@ -10,5 +10,5 @@ namespace Omnipay\Gvp\Message;
  */
 class CaptureRequest extends PurchaseRequest
 {
-    protected $actionType = 'sales';
+    protected $actionType = 'postauth';
 }

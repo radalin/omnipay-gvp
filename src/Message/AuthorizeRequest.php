@@ -10,5 +10,5 @@ namespace Omnipay\Gvp\Message;
  */
 class AuthorizeRequest extends PurchaseRequest
 {
-    protected $actionType = 'postauth';
+    protected $actionType = 'preauth';
 }
