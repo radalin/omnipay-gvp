@@ -83,7 +83,7 @@ class PurchaseRequest extends AbstractRequest
         );
 
         $data['Order'] = array(
-            'OrderID' => $this->getOrderId(),
+            'OrderID' => $this->getTransactionId(),
             'GroupID' => "",
         );
 
@@ -142,18 +142,13 @@ class PurchaseRequest extends AbstractRequest
     {
         return strtoupper(
             sha1(
-                $this->getOrderId().
+                $this->getTransactionId().
                 $this->getTerminalId().
                 $this->getCard()->getNumber().
                 $this->getAmountInteger().
                 $this->getSecurityHash($password)
             )
         );
-    }
-
-    public function getOrderId()
-    {
-        return $this->getParameter('orderid');
     }
 
     public function getTerminalId()
@@ -242,10 +237,5 @@ class PurchaseRequest extends AbstractRequest
     public function setType($value)
     {
         return $this->setParameter('type', $value);
-    }
-
-    public function setOrderId($value)
-    {
-        return $this->setParameter('orderid', $value);
     }
 }
