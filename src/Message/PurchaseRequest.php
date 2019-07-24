@@ -33,7 +33,7 @@ class PurchaseRequest extends AbstractRequest
             'CardholderPresentCode' => "0",
             'MotoInd' => "N",
             'Description' => "",
-            'OriginalRetrefNum' => $this->getTransactionId(),
+            'OriginalRetrefNum' => '',
             'CepBank' => array(
                 'GSMNumber' => $this->getCard()->getBillingPhone(),
                 'CepBank' => "",
