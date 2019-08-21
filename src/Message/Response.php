@@ -80,7 +80,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     public function getMessage()
     {
-        return (string) $this->data["Transaction"]->Response->Message;
+        if ($this->isSuccessful()) {
+            return (string) $this->data["Transaction"]->Response->Message;
+        }
+
+        return $this->getError();
     }
 
     /**
